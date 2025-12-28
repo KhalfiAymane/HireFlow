@@ -8,7 +8,8 @@
 /vendor/
 /node_modules/
 /public/bundles/
-
+/dump_project.py
+/project_dump.txt
 # IDE
 /.idea/
 /.vscode/

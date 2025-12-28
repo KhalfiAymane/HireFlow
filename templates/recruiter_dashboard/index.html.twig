@@ -2,134 +2,378 @@
 
 {% block title %}Recruiter Dashboard - HireFlow{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Custom Styles for Recruiter Dashboard */
+    .stat-card {
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+        color: white;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-card.total-offers { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .stat-card.total-apps { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .stat-card.pending { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .stat-card.accepted { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .stat-card.rejected { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 0;
+    }
+    .stat-label {
+        color: rgba(255,255,255,0.9);
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.9;
+    }
+
+    .status-badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-accepted { background: #d4edda; color: #155724; }
+    .status-rejected { background: #f8d7da; color: #721c24; }
+
+    .btn-quick-action {
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    .btn-quick-action:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-accept-quick {
+        background: #28a745;
+        color: white;
+        border: none;
+    }
+    .btn-accept-quick:hover {
+        background: #218838;
+        color: white;
+    }
+
+    .btn-reject-quick {
+        background: #dc3545;
+        color: white;
+        border: none;
+    }
+    .btn-reject-quick:hover {
+        background: #c82333;
+        color: white;
+    }
+
+    .btn-view {
+        background: #6c757d;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+    .btn-view:hover {
+        background: #5a6268;
+        color: white;
+    }
+
+    .offer-title-link {
+        color: #495057;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .offer-title-link:hover {
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+    .application-row {
+        transition: background-color 0.2s;
+    }
+    .application-row:hover {
+        background-color: #f8f9fa;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        color: #6c757d;
+    }
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: #dee2e6;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="container">
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <h3>Recruiter Menu</h3>
-        <ul>
-            <li><a href="{{ path('recruiter_dashboard') }}" class="active">Dashboard</a></li>
-            <li><a href="{{ path('offer_index') }}">My Job Offers</a></li>
-            {# <li><a href="{{ path('application_index') }}">Applications</a></li>
-            <li><a href="{{ path('profile_edit') }}">My Profile</a></li> #}
-            <li><a href="{{ path('app_logout') }}">Logout</a></li>
-        </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <h1>Welcome, {{ app.user.fullName }} 🧑‍💼</h1>
-        <p class="user-email">{{ app.user.email }}</p>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            {# <a href="{{ path('offer_new') }}" class="btn-action">➕ Create New Job Offer</a>
-            <a href="{{ path('application_index') }}" class="btn-action">📋 View All Applications</a> #}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Welcome, {{ app.user.fullName }} 🧑‍💼</h1>
+            <p class="text-muted mb-0">Recruiter Dashboard • Manage your job offers and applications</p>
         </div>
+        <div class="d-flex gap-2">
+            {# <!-- We'll uncomment these when we create the pages -->
+            <!--
+            <a href="{{ path('offer_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>New Job Offer
+            </a>
+            <a href="{{ path('application_index') }}" class="btn btn-outline-primary">
+                <i class="bi bi-list-check me-2"></i>All Applications
+            </a>
+            --> #}
+        </div>
+    </div>
 
-        <!-- Statistics Cards -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <h3>Total Offers</h3>
-                <p class="stat-number">{{ stats.total_offers }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Total Applications</h3>
-                <p class="stat-number">{{ stats.total_applications }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Pending</h3>
-                <p class="stat-number">{{ stats.pending }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Accepted</h3>
-                <p class="stat-number">{{ stats.accepted }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Rejected</h3>
-                <p class="stat-number">{{ stats.rejected }}</p>
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="bi bi-info-circle me-3" style="font-size: 1.5rem;"></i>
+                <div>
+                    <strong>Quick Stats Overview:</strong> You have {{ stats.total_offers|default(0) }} active job offers and received {{ stats.total_applications|default(0) }} applications total.
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Recent Offers Table -->
-        <h2>Your Job Offers</h2>
-        {% if offers|length > 0 %}
-            <table class="offers-table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Applications</th>
-                        <th>Created Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for offer in offers|slice(0, 5) %}
-                    <tr>
-                        <td>{{ offer.title }}</td>
-                        <td>{{ offer.description|slice(0, 50) }}...</td>
-                        <td>{{ offer.applications|length }}</td>
-                        <td>{{ offer.createdAt|date('Y-m-d') }}</td>
-                        <td>
-                            {# <a href="{{ path('offer_show', {'id': offer.id}) }}" class="btn-view">View</a>
-                            <a href="{{ path('offer_edit', {'id': offer.id}) }}" class="btn-edit">Edit</a> #}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            {# <a href="{{ path('offer_index') }}" class="btn-see-all">See All Offers</a> #}
-        {% else %}
-            <div class="no-data">
-                <p>You haven't created any job offers yet.</p>
-                <a href="{{ path('offer_new') }}" class="btn-create">Create Your First Job Offer</a>
+    <!-- Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card total-offers h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Total Offers</p>
+                        <h2 class="stat-number">{{ stats.total_offers|default(0) }}</h2>
+                    </div>
+                    <div class="ms-3">
+                        <i class="bi bi-briefcase" style="font-size: 2.5rem; color: rgba(255,255,255,0.8);"></i>
+                    </div>
+                </div>
             </div>
-        {% endif %}
+        </div>
 
-        <!-- Recent Applications Table -->
-        <h2>Recent Applications</h2>
-        {% if applications|length > 0 %}
-            <table class="applications-table">
-                <thead>
-                    <tr>
-                        <th>Candidate</th>
-                        <th>Job Title</th>
-                        <th>Applied Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for application in applications|slice(0, 5) %}
-                    <tr>
-                        <td>{{ application.candidate.fullName }}</td>
-                        <td>{{ application.offer.title }}</td>
-                        <td>{{ application.createdAt|date('Y-m-d') }}</td>
-                        <td>
-                            <span class="status-badge status-{{ application.status|lower }}">
-                                {{ application.status }}
-                            </span>
-                        </td>
-                        <td>
-                            {# <a href="{{ path('application_show', {'id': application.id}) }}" class="btn-view">View</a> #}
-                            {% if application.status == 'PENDING' %}
-                                {# <a href="{{ path('application_accept', {'id': application.id}) }}" class="btn-accept">Accept</a>
-                                <a href="{{ path('application_reject', {'id': application.id}) }}" class="btn-reject">Reject</a> #}
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            {# <a href="{{ path('application_index') }}" class="btn-see-all">See All Applications</a> #}
-        {% else %}
-            <div class="no-data">
-                <p>No applications received yet.</p>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card total-apps h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Total Applications</p>
+                        <h2 class="stat-number">{{ stats.total_applications|default(0) }}</h2>
+                    </div>
+                    <div class="ms-3">
+                        <i class="bi bi-people" style="font-size: 2.5rem; color: rgba(255,255,255,0.8);"></i>
+                    </div>
+                </div>
             </div>
-        {% endif %}
-    </main>
+        </div>
+
+        <div class="col-xl-2 col-md-4 mb-4">
+            <div class="stat-card pending h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Pending</p>
+                        <h2 class="stat-number">{{ stats.pending|default(0) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 mb-4">
+            <div class="stat-card accepted h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Accepted</p>
+                        <h2 class="stat-number">{{ stats.accepted|default(0) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4 mb-4">
+            <div class="stat-card rejected h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Rejected</p>
+                        <h2 class="stat-number">{{ stats.rejected|default(0) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two Columns Layout -->
+    <div class="row">
+        <!-- Recent Applications -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Applications</h5>
+                    <span class="badge bg-secondary">Latest 5</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if applications|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Candidate</th>
+                                        <th>Position</th>
+                                        <th>Applied</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications|slice(0, 5) %}
+                                    <tr class="application-row">
+                                        <td>
+                                            <div class="fw-semibold">{{ application.candidate.fullName }}</div>
+                                            <small class="text-muted">{{ application.candidate.email }}</small>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="offer-title-link">
+                                                {{ application.offer.title }}
+                                            </a>
+                                        </td>
+                                        <td>{{ application.createdAt|date('M d') }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ application.status|lower }}">
+                                                {{ application.status }}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="bi bi-person-x"></i>
+                            <h5 class="text-muted mb-3">No applications yet</h5>
+                            <p class="text-muted">Applications will appear here when candidates apply to your job offers.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if applications|length > 0 %}
+                    <div class="card-footer bg-white border-top text-center py-3">
+                        <small class="text-muted">Showing {{ applications|slice(0, 5)|length }} of {{ applications|length }} applications</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Your Job Offers -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Your Job Offers</h5>
+                    {# <!-- We'll uncomment when we create the offer_new route -->
+                    <!-- <a href="{{ path('offer_new') }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-plus"></i> New
+                    </a> --> #}
+                </div>
+                <div class="card-body p-0">
+                    {% if offers|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for offer in offers|slice(0, 5) %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <a href="#" class="text-dark text-decoration-none">
+                                                {{ offer.title }}
+                                            </a>
+                                        </h6>
+                                        <p class="mb-1 text-muted small">{{ offer.description|slice(0, 80) }}...</p>
+                                        <div class="d-flex align-items-center mt-2">
+                                            <small class="text-muted me-3">
+                                                <i class="bi bi-calendar3 me-1"></i>
+                                                {{ offer.createdAt|date('M d, Y') }}
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="bi bi-person-plus me-1"></i>
+                                                {{ offer.applications|length }} applications
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="ms-3">
+                                        <span class="badge bg-light text-dark">
+                                            {{ offer.contractType|default('Full-time') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="bi bi-briefcase"></i>
+                            <h5 class="text-muted mb-3">No job offers yet</h5>
+                            <p class="text-muted mb-4">Create your first job offer to start receiving applications.</p>
+                            <!-- We'll uncomment when we create the offer_new route -->
+                            <!-- <a href="{{ path('offer_new') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create First Offer
+                            </a> -->
+                        </div>
+                    {% endif %}
+                </div>
+                {% if offers|length > 0 %}
+                    <div class="card-footer bg-white border-top">
+                        <div class="row">
+                            <div class="col">
+                                <small class="text-muted">{{ offers|length }} total offers</small>
+                            </div>
+                            <div class="col text-end">
+                                <!-- We'll uncomment when we create the offer_index route -->
+                                <!-- <a href="{{ path('offer_index') }}" class="btn btn-sm btn-outline-primary">
+                                    View All <i class="bi bi-arrow-right ms-1"></i>
+                                </a> -->
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
 </div>
+{% endblock %}
+
+{% block javascripts_body %}
+<script>
+// This will be used for quick actions later
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Status badge colors based on status
+    document.querySelectorAll('.status-badge').forEach(badge => {
+        const status = badge.textContent.trim().toLowerCase();
+        badge.className = `status-badge status-${status}`;
+    });
+});
+</script>
 {% endblock %}

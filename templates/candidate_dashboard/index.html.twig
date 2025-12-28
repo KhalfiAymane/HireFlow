@@ -2,86 +2,291 @@
 
 {% block title %}Candidate Dashboard - HireFlow{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .stat-card {
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-card.total { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .stat-card.pending { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .stat-card.accepted { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .stat-card.rejected { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: white;
+        margin: 0;
+    }
+    .stat-label {
+        color: rgba(255,255,255,0.9);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .status-badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-accepted { background: #d4edda; color: #155724; }
+    .status-rejected { background: #f8d7da; color: #721c24; }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .btn-view {
+        background: #6c757d;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+    .btn-view:hover {
+        background: #5a6268;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-apply {
+        background: #007bff;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .btn-apply:hover {
+        background: #0056b3;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="container">
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <h3>Candidate Menu</h3>
-        <ul>
-            <li><a href="{{ path('candidate_dashboard') }}" class="active">Dashboard</a></li>
-            <li><a href="{{ path('offer_index') }}">Browse Jobs</a></li>
-            <li><a href="{{ path('application_index') }}">My Applications</a></li>
-            <li><a href="{{ path('profile_edit') }}">My Profile</a></li>
-            <li><a href="{{ path('app_logout') }}">Logout</a></li>
-        </ul>
-    </nav>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Welcome back, {{ app.user.fullName }} 👋</h1>
+            <p class="text-muted mb-0">Track your job applications and discover new opportunities</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('offer_index') }}" class="btn btn-primary">
+                <i class="bi bi-search me-2"></i>Browse Jobs
+            </a>
+            <!-- Note: We'll add this link when we create the profile page -->
+            <!-- <a href="{{ path('profile_edit') }}" class="btn btn-outline-primary">
+                <i class="bi bi-person me-2"></i>Edit Profile
+            </a> -->
+        </div>
+    </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <h1>Welcome, {{ app.user.fullName }} 👤</h1>
-        <p class="user-email">{{ app.user.email }}</p>
-
-        <!-- Statistics Cards -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <h3>Total Applications</h3>
-                <p class="stat-number">{{ stats.total }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Pending</h3>
-                <p class="stat-number">{{ stats.pending }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Accepted</h3>
-                <p class="stat-number">{{ stats.accepted }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Rejected</h3>
-                <p class="stat-number">{{ stats.rejected }}</p>
+    <!-- Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card total h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Total Applications</p>
+                        <h2 class="stat-number">{{ stats.total|default(0) }}</h2>
+                    </div>
+                    <div class="ms-3">
+                        <i class="bi bi-file-text" style="font-size: 2.5rem; color: rgba(255,255,255,0.8);"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Recent Applications Table -->
-        <h2>Recent Applications</h2>
-        {% if applications|length > 0 %}
-            <table class="applications-table">
-                <thead>
-                    <tr>
-                        <th>Job Title</th>
-                        <th>Company</th>
-                        <th>Applied Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for application in applications|slice(0, 5) %}
-                    <tr>
-                        <td>{{ application.offer.title }}</td>
-                        <td>{{ application.offer.recruiter.fullName }}</td>
-                        <td>{{ application.createdAt|date('Y-m-d') }}</td>
-                        <td>
-                            <span class="status-badge status-{{ application.status|lower }}">
-                                {{ application.status }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{{ path('application_show', {'id': application.id}) }}" class="btn-view">View</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            {% if applications|length > 5 %}
-                <a href="{{ path('application_index') }}" class="btn-see-all">See All Applications</a>
-            {% endif %}
-        {% else %}
-            <div class="no-data">
-                <p>You haven't applied to any jobs yet.</p>
-                <a href="{{ path('offer_index') }}" class="btn-apply">Browse Available Jobs</a>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card pending h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Pending Review</p>
+                        <h2 class="stat-number">{{ stats.pending|default(0) }}</h2>
+                    </div>
+                    <div class="ms-3">
+                        <i class="bi bi-clock" style="font-size: 2.5rem; color: rgba(255,255,255,0.8);"></i>
+                    </div>
+                </div>
             </div>
-        {% endif %}
-    </main>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card accepted h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Accepted</p>
+                        <h2 class="stat-number">{{ stats.accepted|default(0) }}</h2>
+                    </div>
+                    <div class="ms-3">
+                        <i class="bi bi-check-circle" style="font-size: 2.5rem; color: rgba(255,255,255,0.8);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card rejected h-100">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="stat-label">Rejected</p>
+                        <h2 class="stat-number">{{ stats.rejected|default(0) }}</h2>
+                    </div>
+                    <div class="ms-3">
+                        <i class="bi bi-x-circle" style="font-size: 2.5rem; color: rgba(255,255,255,0.8);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two Columns Layout -->
+    <div class="row">
+        <!-- Recent Applications -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent Applications</h5>
+                        {% if applications|length > 0 %}
+                        <span class="badge bg-primary">{{ applications|length }} total</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if applications|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Company</th>
+                                        <th>Applied Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications|slice(0, 5) %}
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">{{ application.offer.title }}</div>
+                                            <small class="text-muted">{{ application.offer.skills|split(',')|slice(0, 2)|join(', ') }}</small>
+                                        </td>
+                                        <td>{{ application.offer.recruiter.fullName }}</td>
+                                        <td>{{ application.createdAt|date('M d, Y') }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ application.status|lower }}">
+                                                {{ application.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn-view">View Details</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if applications|length > 5 %}
+                            <div class="text-center mt-3">
+                                <a href="#" class="btn btn-outline-primary btn-sm">View All Applications</a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="bi bi-file-text" style="font-size: 4rem; color: #dee2e6;"></i>
+                            </div>
+                            <h5 class="text-muted mb-3">No applications yet</h5>
+                            <p class="text-muted mb-4">Start your job search and apply to positions that match your skills</p>
+                            <a href="{{ path('offer_index') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-search me-2"></i>Browse Available Jobs
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats & Tips -->
+        <div class="col-lg-4 mb-4">
+            <!-- Application Status Chart (Placeholder for now) -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Application Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <!-- This will be replaced with a real chart later -->
+                        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                            <div class="text-center">
+                                <i class="bi bi-pie-chart" style="font-size: 4rem; color: #dee2e6;"></i>
+                                <p class="text-muted mt-3">Chart will display here<br><small>Using Chart.js or similar</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Job Search Tips</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <small class="text-muted">Customize your resume for each application to highlight relevant skills.</small>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <small class="text-muted">Follow up after 5-7 business days if you haven't heard back.</small>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <small class="text-muted">Prepare for interviews by researching the company and practicing common questions.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block javascripts_body %}
+<!-- We'll add Chart.js here later when we implement charts -->
+<script>
+// This will be used for interactive elements later
+console.log('Candidate dashboard loaded');
+</script>
 {% endblock %}
