@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recruiter Dashboard - HireFlow{% endblock %}
+
+{% block body %}
+<div class="container">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <h3>Recruiter Menu</h3>
+        <ul>
+            <li><a href="{{ path('recruiter_dashboard') }}" class="active">Dashboard</a></li>
+            <li><a href="{{ path('offer_index') }}">My Job Offers</a></li>
+            {# <li><a href="{{ path('application_index') }}">Applications</a></li>
+            <li><a href="{{ path('profile_edit') }}">My Profile</a></li> #}
+            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1>Welcome, {{ app.user.fullName }} 🧑‍💼</h1>
+        <p class="user-email">{{ app.user.email }}</p>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            {# <a href="{{ path('offer_new') }}" class="btn-action">➕ Create New Job Offer</a>
+            <a href="{{ path('application_index') }}" class="btn-action">📋 View All Applications</a> #}
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3>Total Offers</h3>
+                <p class="stat-number">{{ stats.total_offers }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Applications</h3>
+                <p class="stat-number">{{ stats.total_applications }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <p class="stat-number">{{ stats.pending }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Accepted</h3>
+                <p class="stat-number">{{ stats.accepted }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Rejected</h3>
+                <p class="stat-number">{{ stats.rejected }}</p>
+            </div>
+        </div>
+
+        <!-- Recent Offers Table -->
+        <h2>Your Job Offers</h2>
+        {% if offers|length > 0 %}
+            <table class="offers-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Applications</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offer in offers|slice(0, 5) %}
+                    <tr>
+                        <td>{{ offer.title }}</td>
+                        <td>{{ offer.description|slice(0, 50) }}...</td>
+                        <td>{{ offer.applications|length }}</td>
+                        <td>{{ offer.createdAt|date('Y-m-d') }}</td>
+                        <td>
+                            {# <a href="{{ path('offer_show', {'id': offer.id}) }}" class="btn-view">View</a>
+                            <a href="{{ path('offer_edit', {'id': offer.id}) }}" class="btn-edit">Edit</a> #}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# <a href="{{ path('offer_index') }}" class="btn-see-all">See All Offers</a> #}
+        {% else %}
+            <div class="no-data">
+                <p>You haven't created any job offers yet.</p>
+                <a href="{{ path('offer_new') }}" class="btn-create">Create Your First Job Offer</a>
+            </div>
+        {% endif %}
+
+        <!-- Recent Applications Table -->
+        <h2>Recent Applications</h2>
+        {% if applications|length > 0 %}
+            <table class="applications-table">
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Job Title</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications|slice(0, 5) %}
+                    <tr>
+                        <td>{{ application.candidate.fullName }}</td>
+                        <td>{{ application.offer.title }}</td>
+                        <td>{{ application.createdAt|date('Y-m-d') }}</td>
+                        <td>
+                            <span class="status-badge status-{{ application.status|lower }}">
+                                {{ application.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {# <a href="{{ path('application_show', {'id': application.id}) }}" class="btn-view">View</a> #}
+                            {% if application.status == 'PENDING' %}
+                                {# <a href="{{ path('application_accept', {'id': application.id}) }}" class="btn-accept">Accept</a>
+                                <a href="{{ path('application_reject', {'id': application.id}) }}" class="btn-reject">Reject</a> #}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# <a href="{{ path('application_index') }}" class="btn-see-all">See All Applications</a> #}
+        {% else %}
+            <div class="no-data">
+                <p>No applications received yet.</p>
+            </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
