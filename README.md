@@ -22,6 +22,7 @@ HireFlow
 │  ├─ preload.php
 │  ├─ reference.php
 │  ├─ routes
+│  │  ├─ attributes.yaml
 │  │  ├─ framework.yaml
 │  │  └─ security.yaml
 │  ├─ routes.yaml
@@ -37,6 +38,7 @@ HireFlow
 ├─ README.md
 ├─ src
 │  ├─ Controller
+│  │  ├─ ApplicationController.php
 │  │  ├─ CandidateDashboardController.php
 │  │  ├─ HomeController.php
 │  │  ├─ OfferController.php
@@ -51,6 +53,7 @@ HireFlow
 │  │  ├─ Offer.php
 │  │  └─ User.php
 │  ├─ Form
+│  │  ├─ OfferType.php
 │  │  └─ RegistrationFormType.php
 │  ├─ Kernel.php
 │  ├─ Repository

@@ -1,0 +1,4 @@
+# config/routes/attributes.yaml
+controllers:
+    resource: ../../src/Controller/
+    type: attribute

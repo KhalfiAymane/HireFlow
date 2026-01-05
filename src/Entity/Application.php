@@ -130,4 +130,41 @@ class Application
 
         return $this;
     }
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->status = self::STATUS_PENDING;
+    }
+    public function getResumePath(): ?string
+    {
+        if ($this->resume) {
+            return '/uploads/resumes/' . $this->resume;
+        }
+        return null;
+    }
+
+    public function getStatusBadgeClass(): string
+    {
+        switch ($this->status) {
+            case self::STATUS_ACCEPTED:
+                return 'bg-success';
+            case self::STATUS_REJECTED:
+                return 'bg-danger';
+            default:
+                return 'bg-warning';
+        }
+    }
+
+    public function getStatusText(): string
+    {
+        switch ($this->status) {
+            case self::STATUS_ACCEPTED:
+                return 'Accepted';
+            case self::STATUS_REJECTED:
+                return 'Rejected';
+            default:
+                return 'Pending';
+        }
+    }
 }

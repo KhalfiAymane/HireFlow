@@ -9,11 +9,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Offer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    // columns
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -37,6 +39,7 @@ class Offer
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    // relations
     #[ORM\ManyToOne(inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable:false)]
     private ?User $recruiter = null;
@@ -47,10 +50,13 @@ class Offer
     #[ORM\OneToMany(targetEntity: Application::class, mappedBy: 'offer')]
     private Collection $applications;
 
+    // constructor
     public function __construct()
     {
         $this->applications = new ArrayCollection();
     }
+
+    // getters et setters
 
     public function getId(): ?int
     {
@@ -181,5 +187,9 @@ class Offer
         }
 
         return $this;
+    }
+    #[ORM\PrePersist]
+    public function setCreatedAtValue():void{
+        $this->createdAt = new \DateTimeImmutable();
     }
 }

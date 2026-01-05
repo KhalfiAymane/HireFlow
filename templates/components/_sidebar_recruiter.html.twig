@@ -19,8 +19,8 @@
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a href="#"
-               class="nav-link rounded {% if ('application_') in app.request.attributes.get("_route") and app.request.attributes.get("_route") != 'application_new' %} active bg-primary text-white {% else %}text-dark{% endif%}">
+            <a href="{{ path('application_index') }}"
+               class="nav-link rounded  {% if app.request.attributes.get('_route') starts with 'application_' %} active bg-primary text-white {% else %}text-dark{% endif%}">
                 📑 Applications
             </a>
         </li>
