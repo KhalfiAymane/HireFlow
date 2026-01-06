@@ -37,8 +37,10 @@ HireFlow
 │  ├─ images
 │  │  ├─ curriculum-vitae.png
 │  │  ├─ donnees.png
+│  │  ├─ door.png
 │  │  ├─ entreprise.png
 │  │  ├─ job-promotion.png
+│  │  ├─ pie-chart.png
 │  │  └─ utilisateur.png
 │  └─ index.php
 ├─ README.md
