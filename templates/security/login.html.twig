@@ -1,9 +1,175 @@
 {# templates/security/login.html.twig #}
 {% extends 'base.html.twig' %}
 {% block title %} Login-HireFlow {% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.login-container {
+    max-width: 440px;
+    margin: 80px auto 40px;
+    padding: 48px 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
+.login-container h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 32px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+/* Alert Styling */
+.login-container .alert {
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    border: 1px solid #f5c6cb;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Form Group Styling */
+.login-container .form-group {
+    margin-bottom: 24px;
+}
+
+.login-container .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+.login-container .form-control {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1a202c;
+    background-color: #ffffff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.login-container .form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.login-container .form-control::placeholder {
+    color: #9ca3af;
+}
+
+/* Button Styling */
+.login-container .btn-primary {
+    width: 100%;
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+}
+
+.login-container .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.login-container .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+/* Footer Links */
+.login-container p {
+    margin-top: 24px;
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.login-container p:last-child {
+    margin-top: 12px;
+}
+
+.login-container p small {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.login-container a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.login-container a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .login-container {
+        margin: 40px 20px;
+        padding: 36px 28px;
+        max-width: 100%;
+    }
+
+    .login-container h1 {
+        font-size: 24px;
+        margin-bottom: 28px;
+    }
+
+    .login-container .form-group {
+        margin-bottom: 20px;
+    }
+
+    .login-container .btn-primary {
+        padding: 12px 20px;
+    }
+}
+
+/* Additional Polish */
+.login-container form {
+    margin-bottom: 0;
+}
+
+.login-container .form-control:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Accessibility Enhancement */
+.login-container .form-control:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+</style>
+{% endblock %}
 {% block body %}
-
 <div class="login-container">
     <h1>Login</h1>
 

@@ -1,19 +1,293 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register - HireFlow{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* Enhanced Register Page Styles */
+
+/* Main Container */
+.register-container {
+    max-width: 440px;
+    margin: 80px auto 40px;
+    padding: 48px 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.register-container h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 32px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+/* Form Errors */
+.register-container .alert,
+.register-container .form-error-message {
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    border: 1px solid #f5c6cb;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Form Rows */
+.register-container .form-group,
+.register-container > form > div {
+    margin-bottom: 24px;
+}
+
+/* Labels */
+.register-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+/* Input Fields */
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"],
+.register-container textarea,
+.register-container select,
+.register-container .form-control {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1a202c;
+    background-color: #ffffff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.register-container input[type="text"]:focus,
+.register-container input[type="email"]:focus,
+.register-container input[type="password"]:focus,
+.register-container textarea:focus,
+.register-container select:focus,
+.register-container .form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Checkbox Styling */
+.register-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+    vertical-align: middle;
+}
+
+.register-container .form-check label,
+.register-container input[type="checkbox"] ~ label {
+    display: inline;
+    font-size: 14px;
+    font-weight: 400;
+    color: #4b5563;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* Checkbox Container */
+.register-container .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+/* Submit Button */
+.register-container button[type="submit"],
+.register-container .btn {
+    width: 100%;
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+}
+
+.register-container button[type="submit"]:hover,
+.register-container .btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.register-container button[type="submit"]:active,
+.register-container .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+/* Field-level Error Messages */
+.register-container .invalid-feedback,
+.register-container .form-error,
+.register-container span.error {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #dc2626;
+}
+
+/* Invalid Input State */
+.register-container input.is-invalid,
+.register-container select.is-invalid,
+.register-container textarea.is-invalid {
+    border-color: #dc2626;
+}
+
+.register-container input.is-invalid:focus,
+.register-container select.is-invalid:focus,
+.register-container textarea.is-invalid:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Help Text */
+.register-container .form-text,
+.register-container small,
+.register-container .help-block {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* Footer Links */
+.register-container p {
+    margin-top: 24px;
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.register-container a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.register-container a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .register-container {
+        margin: 40px 20px;
+        padding: 36px 28px;
+        max-width: 100%;
+    }
+
+    .register-container h1 {
+        font-size: 24px;
+        margin-bottom: 28px;
+    }
+
+    .register-container .form-group,
+    .register-container > form > div {
+        margin-bottom: 20px;
+    }
+
+    .register-container button[type="submit"],
+    .register-container .btn {
+        padding: 12px 20px;
+    }
+}
+
+/* Accessibility Enhancement */
+.register-container input:focus-visible,
+.register-container select:focus-visible,
+.register-container textarea:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Disabled State */
+.register-container input:disabled,
+.register-container select:disabled,
+.register-container textarea:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Page Background */
+body {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    min-height: 100vh;
+}
+</style>
+{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="register-container">
+    <h1>Create Your Account</h1>
 
     {{ form_errors(registrationForm) }}
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
 
-        <button type="submit" class="btn">Register</button>
+        {{ form_row(registrationForm.email, {
+            'label': 'Email Address',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.fullName, {
+            'label': 'Full Name',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.phone, {
+            'label': 'Phone Number',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.plainPassword, {
+            'label': 'Password',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        <div class="form-check">
+            {{ form_widget(registrationForm.agreeTerms, {
+                'attr': {'class': 'form-check-input'}
+            }) }}
+            {{ form_label(registrationForm.agreeTerms, null, {
+                'label_attr': {'class': 'form-check-label'}
+            }) }}
+            {{ form_errors(registrationForm.agreeTerms) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
     {{ form_end(registrationForm) }}
+
+    <p>Already have an account? <a href="{{ path('app_login') }}">Login here</a></p>
+</div>
 {% endblock %}

@@ -41,6 +41,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phone = null;
 
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+
+
     /**
      * @var Collection<int, Offer>
      */
@@ -50,6 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->offers = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -159,6 +166,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->offers;
     }
 
+
     public function addOffer(Offer $offer): static
     {
         if (!$this->offers->contains($offer)) {
@@ -177,6 +185,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $offer->setRecruiter(null);
             }
         }
+
+        return $this;
+    }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -1,20 +1,387 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}My Profile - HireFlow{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Profile Page Specific Styles */
+    .profile-card {
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .profile-card:hover {
+        transform: translateY(-2px);
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px 10px 0 0;
+        padding: 20px;
+    }
+    .profile-header h5 {
+        color: white;
+        margin: 0;
+    }
+    .account-status-badge {
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+        min-width: 45px;
+        justify-content: center;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        border-color: #86b7fe;
+    }
+    .danger-zone {
+        border-left: 4px solid #dc3545;
+        background-color: #f8f9fa;
+    }
+    .member-since {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Header with Stats -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 text-dark">
+                    <i class="bi bi-person-circle me-2"></i>My Profile
+                </h1>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="account-status-badge bg-primary">
+                        {% if is_granted('ROLE_CANDIDATE') %}
+                            <i class="bi bi-person-badge me-1"></i> Candidate
+                        {% elseif is_granted('ROLE_RECRUITER') %}
+                            <i class="bi bi-briefcase me-1"></i> Recruiter
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            <!-- Member Since Card -->
+            <div class="member-since mb-4">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-calendar3 me-3" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <h6 class="mb-0">Member Since</h6>
+                        <p class="mb-0">{{ user.createdAt ? user.createdAt|date('F j, Y') : 'Recently' }}</p>
+                    </div>
+                </div>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/khalfi aymane/Desktop/HireFlow/src/Controller/ProfileController.php</code></li>
-        <li>Your template at <code>C:/Users/khalfi aymane/Desktop/HireFlow/templates/profile/index.html.twig</code></li>
-    </ul>
+            <!-- Profile Information Card -->
+            <div class="card profile-card border-0">
+                <div class="profile-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-lines-fill me-2"></i>Personal Information
+                    </h5>
+                    <p class="mb-0 opacity-75">Update your personal details here</p>
+                </div>
+                <div class="card-body">
+                    {{ form_start(profileForm, {
+                        'attr': {
+                            'class': 'needs-validation',
+                            'novalidate': 'novalidate'
+                        }
+                    }) }}
+
+                    <div class="row">
+                        <!-- Full Name -->
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(profileForm.fullName, null, {
+                                'label_attr': {'class': 'form-label fw-semibold text-dark'}
+                            }) }}
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                {{ form_widget(profileForm.fullName, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (profileForm.fullName.vars.errors|length > 0 ? ' is-invalid' : '')
+                                    }
+                                }) }}
+                                {% if profileForm.fullName.vars.errors|length > 0 %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        {{ profileForm.fullName.vars.errors[0].message }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(profileForm.email, null, {
+                                'label_attr': {'class': 'form-label fw-semibold text-dark'}
+                            }) }}
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                {{ form_widget(profileForm.email, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (profileForm.email.vars.errors|length > 0 ? ' is-invalid' : '')
+                                    }
+                                }) }}
+                                {% if profileForm.email.vars.errors|length > 0 %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        {{ profileForm.email.vars.errors[0].message }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(profileForm.phone, null, {
+                                'label_attr': {'class': 'form-label fw-semibold text-dark'}
+                            }) }}
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                {{ form_widget(profileForm.phone, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (profileForm.phone.vars.errors|length > 0 ? ' is-invalid' : '')
+                                    }
+                                }) }}
+                                {% if profileForm.phone.vars.errors|length > 0 %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        {{ profileForm.phone.vars.errors[0].message }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-text text-muted">Optional - used for recruitment purposes</div>
+                        </div>
+
+                        <!-- User ID (Read-only) -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold text-dark">User ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-hash"></i>
+                                </span>
+                                <input type="text" class="form-control" value="USER-{{ user.id|default('0000') }}" readonly>
+                            </div>
+                            <div class="form-text text-muted">Your unique identifier in the system</div>
+                        </div>
+
+                        <!-- Account Status -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold text-dark">Account Status</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-shield-check"></i>
+                                </span>
+                                <input type="text" class="form-control" value="Active" readonly>
+                            </div>
+                            <div class="form-text text-muted">
+                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                Your account is active and verified
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ is_granted('ROLE_CANDIDATE') ? path('candidate_dashboard') : path('recruiter_dashboard') }}"
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-save me-1"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form_end(profileForm) }}
+                </div>
+            </div>
+
+            <!-- Account Security Card -->
+            <div class="card profile-card border-0">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0 text-dark">
+                        <i class="bi bi-shield-lock me-2"></i>Account Security
+                    </h5>
+                    <p class="text-muted small mb-0">Manage your account security settings</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Password Management -->
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-light rounded-circle p-2 me-3">
+                                    <i class="bi bi-key" style="font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-dark">Password</h6>
+                                    <p class="text-muted small mb-0">Last changed: Recently</p>
+                                </div>
+                            </div>
+                            <a href="#" class="btn btn-outline-warning btn-sm">
+                                <i class="bi bi-lock me-1"></i> Change Password
+                            </a>
+                        </div>
+
+                        <!-- Email Verification -->
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-light rounded-circle p-2 me-3">
+                                    <i class="bi bi-envelope-check" style="font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-dark">Email Verification</h6>
+                                    <p class="text-muted small mb-0">{{ user.email }}</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i> Verified
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="danger-zone p-4 rounded mt-4">
+                        <h6 class="text-danger mb-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Danger Zone
+                        </h6>
+
+                        <!-- Delete Account Button -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 text-dark">Delete Account</h6>
+                                <p class="text-muted small mb-0">
+                                    Permanently delete your account and all associated data. This action cannot be undone.
+                                </p>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                <i class="bi bi-trash me-1"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger" id="deleteAccountModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Delete Account
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex p-4 mb-3">
+                        <i class="bi bi-trash-fill text-danger" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <h4 class="text-dark mb-3">Are you absolutely sure?</h4>
+                    <p class="text-muted">
+                        This action <strong class="text-danger">cannot be undone</strong>. This will permanently delete:
+                    </p>
+                    <ul class="list-group list-group-flush text-start mb-4">
+                        <li class="list-group-item border-0">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            Your personal profile information
+                        </li>
+                        {% if is_granted('ROLE_CANDIDATE') %}
+                        <li class="list-group-item border-0">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            All your job applications
+                        </li>
+                        {% elseif is_granted('ROLE_RECRUITER') %}
+                        <li class="list-group-item border-0">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            All your job offers
+                        </li>
+                        <li class="list-group-item border-0">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            All applications for your offers
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle me-2"></i>
+                        You will be logged out immediately and redirected to the home page.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Cancel
+                </button>
+                <form action="{{ path('profile_delete') }}" method="POST" id="deleteAccountForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-account') }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Yes, Delete My Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts_body %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+
+    Array.from(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+    // Delete account confirmation
+    const deleteForm = document.getElementById('deleteAccountForm');
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', function(e) {
+            if (!confirm('Are you absolutely sure you want to delete your account? This action cannot be undone!')) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    // Bootstrap modal cleanup
+    const deleteModal = document.getElementById('deleteAccountModal');
+    if (deleteModal) {
+        deleteModal.addEventListener('hidden.bs.modal', function () {
+            // Reset any form states if needed
+        });
+    }
+});
+</script>
 {% endblock %}

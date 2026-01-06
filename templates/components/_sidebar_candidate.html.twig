@@ -1,7 +1,7 @@
 {# templates/components/_sidebar_candidate.html.twig #}
 <nav class="sidebar bg-light border-end" style="height: 100vh; position: sticky; top: 0;">
     <div class="sidebar-header p-3 border-bottom">
-        <h4 class="mb-0">👤 Candidate</h4>
+        <h4 class="mb-0">Candidate</h4>
         <small class="text-muted">{{ app.user.email }}</small>
     </div>
 
@@ -9,30 +9,30 @@
         <li class="nav-item mb-2">
             <a href="{{ path('candidate_dashboard') }}"
                class="nav-link rounded {% if app.request.attributes.get('_route') == 'candidate_dashboard' %}active bg-primary text-white{% else %}text-dark{% endif %}">
-                📊 Dashboard
+                <img src="{{ asset('images/pie-chart.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"> Dashboard
             </a>
         </li>
         <li class="nav-item mb-2">
             <a href="{{ path('offer_index') }}"
                class="nav-link rounded {% if 'offer_' in app.request.attributes.get('_route') %}active bg-primary text-white{% else %}text-dark{% endif %}">
-                🔍 Browse Jobs
+                <img src="{{ asset('images/job-promotion.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"> Browse Jobs
             </a>
         </li>
         <li class="nav-item mb-2">
             <a href="{{ path('application_index') }}"
                class="nav-link rounded  {% if app.request.attributes.get('_route') starts with 'application_' %}active bg-primary text-white{% else %}text-dark{% endif %}">
-                📄 My Applications
+                <img src="{{ asset('images/curriculum-vitae.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"> My Applications
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a href="#"
+            <a href="{{ path('profile_edit') }}"
                class="nav-link rounded {% if app.request.attributes.get('_route') == 'profile_edit' %}active bg-primary text-white{% else %}text-dark{% endif %}">
-                👤 My Profile
+                <img src="{{ asset('images/utilisateur.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"> My Profile
             </a>
         </li>
         <li class="nav-item mt-4 pt-3 border-top">
             <a href="{{ path('app_logout') }}" class="nav-link text-danger">
-                🚪 Logout
+                <img src="{{ asset('images/door.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"> Logout
             </a>
         </li>
     </ul>

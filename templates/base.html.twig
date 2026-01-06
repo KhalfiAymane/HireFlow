@@ -33,7 +33,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold" href="{{ path('candidate_dashboard') }}">
-                    🏢 <span class="ms-2">HireFlow</span>
+                    <img src="{{ asset('images/entreprise.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"> <span class="ms-2">HireFlow</span>
                 </a>
 
                 <div class="navbar-nav ms-auto">
@@ -43,7 +43,7 @@
                         </span>
                         <a class="nav-link" href="{{ path('app_logout') }}">
                             <span class="d-none d-md-inline">Logout</span>
-                            <span class="d-md-none">🚪</span>
+                            <span class="d-md-none"><img src="{{ asset('images/door.png') }}" alt="Applications" class="me-2" style="width: 20px; height: 20px;"></span>
                         </a>
                     {% else %}
                         <a class="nav-link" href="{{ path('app_login') }}">Login</a>

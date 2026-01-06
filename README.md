@@ -34,6 +34,12 @@ HireFlow
 ├─ migrations
 │  └─ Version20251225215813.php
 ├─ public
+│  ├─ images
+│  │  ├─ curriculum-vitae.png
+│  │  ├─ donnees.png
+│  │  ├─ entreprise.png
+│  │  ├─ job-promotion.png
+│  │  └─ utilisateur.png
 │  └─ index.php
 ├─ README.md
 ├─ src
@@ -54,6 +60,7 @@ HireFlow
 │  │  └─ User.php
 │  ├─ Form
 │  │  ├─ OfferType.php
+│  │  ├─ ProfileFormType.php
 │  │  └─ RegistrationFormType.php
 │  ├─ Kernel.php
 │  ├─ Repository
